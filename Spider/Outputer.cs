@@ -11,38 +11,32 @@ namespace Smartshopping.Spider
 {
     public class Outputer
     {
-        private IProductRepo _repository;
+        private MyContext _myContext;
         private IMapper _mapper;
 
         public Outputer()
         {
-            var services = new ServiceCollection();
-            var provider = services.BuildServiceProvider();
-            _repository = provider.CreateScope().ServiceProvider.GetService<SqlProductRepo>();
-            _mapper = provider.GetService<IMapper>();
+            _myContext = GlobalAppConst.ServiceProvider.GetService<MyContext>();
+            _mapper = GlobalAppConst.ServiceProvider.GetService<IMapper>();
         }
 
         public void CollectData(List<ProductCreateDto> products)
         {
-            
+            foreach (var product in products)
+            {
+                var oldProduct = _myContext.Products.OrderByDescending(item => item.Date)
+                    .FirstOrDefault(item => item.ProductId == product.ProductId);
+                if (oldProduct != null)
+                {
+                    oldProduct.Latest = false;
+                    product.Compare = (Convert.ToDouble(product.Price) - Convert.ToDouble(oldProduct.Price)) /
+                                      Convert.ToDouble(oldProduct.Price);
+                }
 
-            // foreach (var product in products)
-            // {
-            //     Console.WriteLine(_repository);
-            //     var oldProduct = _repository.GetProductById(product.ProductId);
-            //     Console.WriteLine("数据{0}", oldProduct);
-            //     if (oldProduct != null)
-            //     {
-            //         oldProduct.Latest = false;
-            //         product.Compare = (Convert.ToDouble(product.Price) - Convert.ToDouble(oldProduct.Price)) /
-            //                           Convert.ToDouble(oldProduct.Price);
-            //     }
-            //     
-            //     var productModel = _mapper.Map<Product>(product);
-            //     _repository.CreateProduct(productModel);
-            // }
-
-            // _repository.SaveChanges();
+                var productModal = _mapper.Map<Product>(product);
+                _myContext.Products.Add(productModal);
+            }
+            _myContext.SaveChanges();
         }
     }
 }

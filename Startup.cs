@@ -41,6 +41,8 @@ namespace Smartshopping
             
             services.AddScoped<IProductRepo, SqlProductRepo>();
 
+            GlobalAppConst.ServiceProvider = services.BuildServiceProvider();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +60,10 @@ namespace Smartshopping
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
         }
+    }
+    public class GlobalAppConst{
+        public static IServiceProvider ServiceProvider{ get; set;}
     }
 }
