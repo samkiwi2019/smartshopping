@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AutoMapper;
+using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
 using Smartshopping.Data;
 using Smartshopping.Dtos;
@@ -24,6 +26,14 @@ namespace Smartshopping.Controllers
         public ActionResult<IEnumerable<ProductReadDto>> GetProducts()
         {
             var productItems = _repository.GetProducts();
+
+            JobManager.AddJob(() =>
+            {
+                Console.WriteLine("I am running!");
+                Spider.SpiderMaker.Crawl();
+                
+            }, (s) => s.ToRunNow().AndEvery(1).Months().OnTheFirst(DayOfWeek.Monday).At(3, 0));
+            
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(productItems));
         }
     }

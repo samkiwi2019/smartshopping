@@ -31,14 +31,16 @@ namespace Smartshopping
         {
             // to connect mysql 
             services.AddDbContext<MyContext>(opt => opt.UseMySql(Configuration.GetConnectionString("connection")));
-            
+
             services.AddControllers().AddNewtonsoftJson(s =>
             {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            
             services.AddScoped<IProductRepo, SqlProductRepo>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

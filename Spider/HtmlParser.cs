@@ -25,6 +25,8 @@ namespace Smartshopping.Spider
 
         private static async Task<List<ProductCreateDto>> GetNewData(string url, IDocument document)
         {
+            if (document == null) throw new ArgumentNullException(nameof(document));
+            
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
             var items = document.QuerySelectorAll("div.fs-product-card").Select(m => m.OuterHtml);
@@ -34,7 +36,7 @@ namespace Smartshopping.Spider
             {
                 var itemHtml = await context.OpenAsync(req => req.Content(item));
                 var product = itemHtml.QuerySelector("div.js-product-card-footer").GetAttribute("data-options");
-               
+
                 using var doc = JsonDocument.Parse(product);
                 var root = doc.RootElement;
                 var details = root.GetProperty("ProductDetails");
@@ -53,32 +55,28 @@ namespace Smartshopping.Spider
                     Latest = true,
                     Date = DateTime.Now
                 };
-                products = products.Append(productItem).ToList();
+                products.Add(productItem);
             }
 
             return products;
         }
 
-        private static IEnumerable<string> GetNewUrls(IDocument document)
+        private static List<string> GetNewUrls(IDocument document)
         {
+            if (document == null) throw new ArgumentNullException(nameof(document));
+            
             var items = document.QuerySelectorAll("ul.fs-pagination__items a");
             var aList = items.Select(item => item.GetAttribute("href")).ToList();
             return aList;
         }
 
 
-        public static async Task<ProductParse> Parse(string url)
+        public static async Task<(List<ProductCreateDto> products, List<string> urls)> Parse(string url)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
             var document = await context.OpenAsync(url);
-            var aProductList = await GetNewData(url, document);
-            var aUrlList = GetNewUrls(document);
-            return new ProductParse
-            {
-                Products = aProductList,
-                Urls = aUrlList
-            };
+            return (await GetNewData(url, document), GetNewUrls(document));
         }
     }
 }

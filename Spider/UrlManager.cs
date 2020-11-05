@@ -6,16 +6,16 @@ namespace Smartshopping.Spider
 {
     public static class UrlManager
     {
-        private static List<string> _newUrls = new List<string>();
+        public static List<string> NewUrls = new List<string>();
         private static List<string> _oldUrls = new List<string>();
 
         private static void AddNewUrl(string url)
         {
-            if (!_newUrls.Contains(url) && !_oldUrls.Contains(url))
-                _newUrls = _newUrls.Append(url).ToList();
+            if (!NewUrls.Contains(url) && !_oldUrls.Contains(url))
+                NewUrls = NewUrls.Append(url).ToList();
         }
 
-        public static void Add_newUrls(List<string> urls)
+        public static void AddNewUrls(List<string> urls)
         {
             if (urls.Count == 0)
                 return;
@@ -26,15 +26,15 @@ namespace Smartshopping.Spider
 
         public static bool HasNewUrl()
         {
-            return _newUrls.Count != 0;
+            return NewUrls.Count != 0;
         }
 
         public static string? GetNewUrl()
         {
-            if (_newUrls.Count <= 0) return null;
+            if (NewUrls.Count <= 0) return null;
             
-            var newUrl = _newUrls.First();
-            _newUrls.Remove(newUrl);
+            var newUrl = NewUrls.First();
+            NewUrls.Remove(newUrl);
             _oldUrls = _oldUrls.Append(newUrl).ToList();
             return newUrl;
         }
