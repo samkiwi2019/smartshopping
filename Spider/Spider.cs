@@ -24,7 +24,7 @@ namespace Smartshopping.Spider
                 Console.WriteLine("Remaining: {0}", UrlManager.NewUrls.Count);
             }
 
-            Console.WriteLine("end game");
+            Console.WriteLine("Game over!");
         }
     }
 }
