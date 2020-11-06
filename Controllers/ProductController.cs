@@ -52,7 +52,7 @@ namespace Smartshopping.Controllers
             if (Spider.SpiderMaker.HasJob)
                 return Content("Spider already have a job, it will update entire website at every 3 am. ");
             Spider.SpiderMaker.GetAJob();
-            JobManager.AddJob(() => { Spider.SpiderMaker.Crawl(); }, (s) => s.ToRunEvery(1).Days().At(3, 0));
+            JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(3, 0));
             // JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunNow());
             return Content("Set schedules Successfully, the Spider will update entire website at every 3 am.");
         }
