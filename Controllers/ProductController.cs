@@ -32,8 +32,8 @@ namespace Smartshopping.Controllers
                 Console.WriteLine("I am running!");
                 Spider.SpiderMaker.Crawl();
                 
-            }, (s) => s.ToRunNow().AndEvery(1).Months().OnTheFirst(DayOfWeek.Monday).At(3, 0));
-            
+            }, (s) => s.ToRunNow());
+                // .ToRunEvery(1).Days().At(3, 0)
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(productItems));
         }
     }
