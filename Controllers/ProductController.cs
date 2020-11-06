@@ -31,29 +31,28 @@ namespace Smartshopping.Controllers
 
         //5012874-EA-000PNS
         [HttpGet("{productId}")]
-        public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId)
+        public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId, string category = "")
         {
-            var productItem = await _repository.GetProductById(productId);
+            var productItem = await _repository.GetProductById(productId, category);
             return Ok(_mapper.Map<ProductReadDto>(productItem));
         }
 
         [HttpGet("{productId}/all")]
-        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProductsByProductId(string productId, int page,
-            int pageSize)
+        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProductsByProductId(string productId, int page = 1,
+            int pageSize = 10)
         {
             var productItems = await _repository.GetProductsById(productId, page, pageSize);
             return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(productItems));
         }
 
 
-        [HttpGet("SetSpiderSchedule")]
+        [HttpGet("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
         {
             if (Spider.SpiderMaker.HasJob)
                 return Content("Spider already have a job, it will update entire website at every 3 am. ");
             Spider.SpiderMaker.GetAJob();
             JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(3, 0));
-            // JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunNow());
             return Content("Set schedules Successfully, the Spider will update entire website at every 3 am.");
         }
     }

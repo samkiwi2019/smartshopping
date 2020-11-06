@@ -27,13 +27,12 @@ namespace Smartshopping.Data
                 .ToListAsync();
         }
 
-        public async Task<Product> GetProductById(string id)
+        public async Task<Product> GetProductById(string id, string category)
         {
             return await _ctx.Products
                 .OrderByDescending(item => item.Date)
-                .FirstOrDefaultAsync(item => item.ProductId == id);
+                .FirstOrDefaultAsync(item => item.ProductId == id && item.Category.ToLower().Contains(category));
         }
-        
         public async Task<IEnumerable<Product>> GetProductsById(string id, int page = 1, int pageSize = 10)
         {
             return await _ctx.Products

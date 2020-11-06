@@ -22,7 +22,7 @@ namespace Smartshopping.Spider
         {
             foreach (var product in products)
             {
-                var oldProduct = await _repository.GetProductById(product.ProductId);
+                var oldProduct = await _repository.GetProductById(product.ProductId, product.Category);
                 if (oldProduct != null)
                 {
                     Console.WriteLine(oldProduct.ProductId);

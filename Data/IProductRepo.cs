@@ -7,7 +7,7 @@ namespace Smartshopping.Data
     public interface IProductRepo
     {
         Task<IEnumerable<Product>> GetProducts(string q, int page, int pageSize);
-        Task<Product> GetProductById(string id);
+        Task<Product> GetProductById(string id, string category);
 
         Task<IEnumerable<Product>> GetProductsById(string id,int page, int pageSize);
         
