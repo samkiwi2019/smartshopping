@@ -11,6 +11,13 @@ namespace Smartshopping.Spider
 {
     public class SpiderMaker
     {
+        public static bool HasJob;
+
+        public static void GetAJob()
+        {
+            HasJob = true;
+        }
+
         public static void Crawl()
         {
             UrlManager.AddNewUrls(HtmlParser.Urls);

@@ -1,15 +1,18 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Smartshopping.Models;
 
 namespace Smartshopping.Data
 {
     public interface IProductRepo
     {
-        IEnumerable<Product> GetProducts();
-        Product GetProductById(string id);
+        Task<IEnumerable<Product>> GetProducts(string q, int page, int pageSize);
+        Task<Product> GetProductById(string id);
+
+        Task<IEnumerable<Product>> GetProductsById(string id,int page, int pageSize);
         
-        bool SaveChanges();
+        Task<bool> SaveChanges();
         
-        void CreateProduct(Product product);
+        Task CreateProduct(Product product);
     }
 }

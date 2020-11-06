@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Smartshopping.Models;
 
 namespace Smartshopping.Data
@@ -15,28 +17,46 @@ namespace Smartshopping.Data
             _ctx = ctx;
         }
 
-        public IEnumerable<Product> GetProducts()
+        public async Task<IEnumerable<Product>> GetProducts(string q, int page, int pageSize)
         {
-            return _ctx.Products.Take(10).ToList();
+            return await _ctx.Products
+                .Where(item => item.Latest)
+                .Where(item => item.Name.ToLower().Contains(q.ToLower()))
+                .Skip((Math.Max(page - 1, 0) * pageSize))
+                .Take(pageSize)
+                .ToListAsync();
         }
 
-        public Product GetProductById(string id)
+        public async Task<Product> GetProductById(string id)
         {
-            return _ctx.Products.OrderByDescending(item=> item.Date).FirstOrDefault(item => item.ProductId == id);
+            return await _ctx.Products
+                .OrderByDescending(item => item.Date)
+                .FirstOrDefaultAsync(item => item.ProductId == id);
+        }
+        
+        public async Task<IEnumerable<Product>> GetProductsById(string id, int page = 1, int pageSize = 10)
+        {
+            return await _ctx.Products
+                .Where(item => item.ProductId == id)
+                .OrderByDescending(item => item.Date)
+                .Skip((Math.Max(page - 1, 0) * pageSize))
+                .Take(pageSize)
+                .ToListAsync();
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChanges()
         {
-            return _ctx.SaveChanges() >= 0;
+            return await _ctx.SaveChangesAsync() > 0;
         }
 
-        public void CreateProduct(Product product)
+        public async Task CreateProduct(Product product)
         {
             if (product == null)
             {
                 throw new ArgumentException(nameof(product));
             }
-            _ctx.Products.Add(product);
+
+            await _ctx.Products.AddAsync(product);
         }
     }
 }
