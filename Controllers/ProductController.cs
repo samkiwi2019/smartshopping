@@ -26,11 +26,12 @@ namespace Smartshopping.Controllers
 
         // GET /api/products
         [HttpGet]
-        public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10)
+        public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10, string category = "",
+            bool isPromotion = false)
         {
             try
             {
-                var query = _repository.GetProducts(q, page, pageSize);
+                var query = _repository.GetProducts(q, page, pageSize, category, isPromotion);
                 var pagedResult = new PagedResult<Product>(query, page, pageSize);
                 var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
                 return new JsonResult(new {items, pagination = pagedResult.Pagination});
@@ -74,16 +75,31 @@ namespace Smartshopping.Controllers
             }
         }
 
+        [HttpGet("/related")]
+        public async Task<ActionResult<IList<ProductReadDto>>> GetProductsByRelated(string name, string category = "")
+        {
+            try
+            {
+                var query = await _repository.GetProductByRelated(name, category);
+                var items = _mapper.Map<IList<ProductReadDto>>(query);
+                return Ok(items);
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
+        }
+
         [HttpGet("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
         {
             try
             {
                 if (Spider.SpiderMaker.HasJob)
-                    return Content("Spider already have a job, it will update entire website at every 3 am. ");
+                    return Content("Spider already got a job, it will update entire website at every 6 AM. ");
                 Spider.SpiderMaker.GetAJob();
-                JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(3, 0));
-                return Content("Set schedules Successfully, the Spider will update entire website at every 3 am.");
+                JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(6, 0));
+                return Content("Set schedules Successfully, the Spider will update entire website at every 6 AM.");
             }
             catch (Exception error)
             {

@@ -7,9 +7,11 @@ namespace Smartshopping.Data
 {
     public interface IProductRepo
     {
-        IQueryable<Product> GetProducts(string q, int page, int pageSize);
+        IQueryable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion);
         
         Task<Product> GetProductById(string id, string category);
+        
+        Task<IList<Product>> GetProductByRelated(string name, string category);
 
         IQueryable<Product> GetProductsById(string id,int page, int pageSize);
         
