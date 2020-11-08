@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentScheduler;
@@ -29,6 +30,8 @@ namespace Smartshopping.Controllers
         public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10, string category = "",
             bool isPromotion = false)
         {
+            q ??= "";
+            category ??= "";
             try
             {
                 var query = _repository.GetProducts(q, page, pageSize, category, isPromotion);
@@ -76,12 +79,12 @@ namespace Smartshopping.Controllers
         }
 
         // GET /api/products/related
-        [HttpGet("/related")]
+        [HttpGet("related")]
         public async Task<ActionResult<IList<ProductReadDto>>> GetProductsByRelated(string name, string category = "")
         {
             try
             {
-                var query = await _repository.GetProductByRelated(name, category);
+                var query = await _repository.GetProductByRelated(name.Split(" ").Last(), category);
                 var items = _mapper.Map<IList<ProductReadDto>>(query);
                 return Ok(items);
             }
