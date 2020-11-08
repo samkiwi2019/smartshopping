@@ -57,17 +57,17 @@ namespace Smartshopping.Controllers
             }
         }
 
+        // GET /api/products/{productId}/all
         [HttpGet("{productId}/all")]
-        public ActionResult GetProductsByProductId(string productId,
+        public async Task<ActionResult<ProductReadDto>> GetProductsByProductId(string productId,
             int page = 1,
             int pageSize = 10)
         {
             try
             {
-                var query = _repository.GetProductsById(productId, page, pageSize);
-                var pagedResult = new PagedResult<Product>(query, page, pageSize);
-                var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
-                return new JsonResult(new {items, pagination = pagedResult.Pagination});
+                var query = await _repository.GetProductsById(productId, page, pageSize);
+                var items = _mapper.Map<IList<ProductReadDto>>(query);
+                return Ok(items);
             }
             catch (Exception error)
             {
@@ -75,6 +75,7 @@ namespace Smartshopping.Controllers
             }
         }
 
+        // GET /api/products/related
         [HttpGet("/related")]
         public async Task<ActionResult<IList<ProductReadDto>>> GetProductsByRelated(string name, string category = "")
         {
@@ -90,7 +91,8 @@ namespace Smartshopping.Controllers
             }
         }
 
-        [HttpGet("setSpiderSchedule")]
+        // GET /api/products/setSpiderSchedule
+        [HttpPost("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
         {
             try

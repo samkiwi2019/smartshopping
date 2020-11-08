@@ -13,7 +13,7 @@ namespace Smartshopping.Data
         
         Task<IList<Product>> GetProductByRelated(string name, string category);
 
-        IQueryable<Product> GetProductsById(string id,int page, int pageSize);
+        Task<IList<Product>> GetProductsById(string id,int page, int pageSize);
         
         Task<bool> SaveChanges();
         
