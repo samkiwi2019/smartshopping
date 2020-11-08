@@ -22,5 +22,5 @@ ENTRYPOINT ["dotnet", "Buyanz.WebAPI.dll"]
 
 # dotnet restore
 # dotnet publish --framework netcoreapp3.1 --configuration Release --output dist
-# docker build . -t venus/app -f Dockerfile
-# docker run -d -p 6001:80 --rm --name venus-api 534a98849cfe
+# docker build . -t spider/app -f Dockerfile
+# docker run -d -p 5000:80 --rm --name venus-api 534a98849cfe
