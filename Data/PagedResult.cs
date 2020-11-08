@@ -17,9 +17,5 @@ namespace Smartshopping.Data
             Pagination = new PaginationBase<T>(list, page, pageSize);
             Items = list.Skip(Math.Max(page - 1, 0) * pageSize).Take(pageSize).ToList();
         }
-
-        public PagedResult()
-        {
-        }
     }
 }
