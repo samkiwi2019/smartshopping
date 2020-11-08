@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Smartshopping.Models;
@@ -17,14 +19,12 @@ namespace Smartshopping.Data
             _ctx = ctx;
         }
 
-        public async Task<IEnumerable<Product>> GetProducts(string q, int page, int pageSize)
+        public IQueryable<Product> GetProducts(string q, int page, int pageSize)
         {
-            return await _ctx.Products
+            var products = _ctx.Products
                 .Where(item => item.Latest)
-                .Where(item => item.Name.ToLower().Contains(q.ToLower()))
-                .Skip((Math.Max(page - 1, 0) * pageSize))
-                .Take(pageSize)
-                .ToListAsync();
+                .Where(item => item.Name.ToLower().Contains(q.ToLower()));
+            return products;
         }
 
         public async Task<Product> GetProductById(string id, string category)
@@ -33,14 +33,11 @@ namespace Smartshopping.Data
                 .OrderByDescending(item => item.Date)
                 .FirstOrDefaultAsync(item => item.ProductId == id && item.Category.ToLower().Contains(category));
         }
-        public async Task<IEnumerable<Product>> GetProductsById(string id, int page = 1, int pageSize = 10)
+        public IQueryable<Product> GetProductsById(string id, int page = 1, int pageSize = 10)
         {
-            return await _ctx.Products
+            return _ctx.Products
                 .Where(item => item.ProductId == id)
-                .OrderByDescending(item => item.Date)
-                .Skip((Math.Max(page - 1, 0) * pageSize))
-                .Take(pageSize)
-                .ToListAsync();
+                .OrderByDescending(item => item.Date);
         }
 
         public async Task<bool> SaveChanges()

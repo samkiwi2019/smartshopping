@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Smartshopping.Models;
 
@@ -6,10 +7,11 @@ namespace Smartshopping.Data
 {
     public interface IProductRepo
     {
-        Task<IEnumerable<Product>> GetProducts(string q, int page, int pageSize);
+        IQueryable<Product> GetProducts(string q, int page, int pageSize);
+        
         Task<Product> GetProductById(string id, string category);
 
-        Task<IEnumerable<Product>> GetProductsById(string id,int page, int pageSize);
+        IQueryable<Product> GetProductsById(string id,int page, int pageSize);
         
         Task<bool> SaveChanges();
         

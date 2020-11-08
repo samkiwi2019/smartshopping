@@ -5,6 +5,7 @@ using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
 using Smartshopping.Data;
 using Smartshopping.Dtos;
+using Smartshopping.Models;
 
 namespace Smartshopping.Controllers
 {
@@ -21,15 +22,17 @@ namespace Smartshopping.Controllers
             _mapper = mapper;
         }
 
+        // GET /api/products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProducts(string q = "", int page = 1,
-            int pageSize = 10)
+        public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10)
         {
-            var productItems = await _repository.GetProducts(q, page, pageSize);
-            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(productItems));
+            var query = _repository.GetProducts(q, page, pageSize);
+            var pagedResult = new PagedResult<Product>(query, page, pageSize);
+            var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
+            return new JsonResult(new {items, pagination = pagedResult.Pagination});
         }
 
-        //5012874-EA-000PNS
+        // GET /api/products/{productId}
         [HttpGet("{productId}")]
         public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId, string category = "")
         {
@@ -38,13 +41,15 @@ namespace Smartshopping.Controllers
         }
 
         [HttpGet("{productId}/all")]
-        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProductsByProductId(string productId, int page = 1,
+        public ActionResult GetProductsByProductId(string productId,
+            int page = 1,
             int pageSize = 10)
         {
-            var productItems = await _repository.GetProductsById(productId, page, pageSize);
-            return Ok(_mapper.Map<IEnumerable<ProductReadDto>>(productItems));
+            var query = _repository.GetProductsById(productId, page, pageSize);
+            var pagedResult = new PagedResult<Product>(query, page, pageSize);
+            var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
+            return new JsonResult(new {items, pagination = pagedResult.Pagination});
         }
-
 
         [HttpGet("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
