@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -5,6 +6,7 @@ using FluentScheduler;
 using Microsoft.AspNetCore.Mvc;
 using Smartshopping.Data;
 using Smartshopping.Dtos;
+using Smartshopping.Library;
 using Smartshopping.Models;
 
 namespace Smartshopping.Controllers
@@ -26,18 +28,32 @@ namespace Smartshopping.Controllers
         [HttpGet]
         public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10)
         {
-            var query = _repository.GetProducts(q, page, pageSize);
-            var pagedResult = new PagedResult<Product>(query, page, pageSize);
-            var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
-            return new JsonResult(new {items, pagination = pagedResult.Pagination});
+            try
+            {
+                var query = _repository.GetProducts(q, page, pageSize);
+                var pagedResult = new PagedResult<Product>(query, page, pageSize);
+                var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
+                return new JsonResult(new {items, pagination = pagedResult.Pagination});
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
         }
 
         // GET /api/products/{productId}
         [HttpGet("{productId}")]
         public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId, string category = "")
         {
-            var productItem = await _repository.GetProductById(productId, category);
-            return Ok(_mapper.Map<ProductReadDto>(productItem));
+            try
+            {
+                var productItem = await _repository.GetProductById(productId, category);
+                return Ok(_mapper.Map<ProductReadDto>(productItem));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
         }
 
         [HttpGet("{productId}/all")]
@@ -45,20 +61,34 @@ namespace Smartshopping.Controllers
             int page = 1,
             int pageSize = 10)
         {
-            var query = _repository.GetProductsById(productId, page, pageSize);
-            var pagedResult = new PagedResult<Product>(query, page, pageSize);
-            var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
-            return new JsonResult(new {items, pagination = pagedResult.Pagination});
+            try
+            {
+                var query = _repository.GetProductsById(productId, page, pageSize);
+                var pagedResult = new PagedResult<Product>(query, page, pageSize);
+                var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
+                return new JsonResult(new {items, pagination = pagedResult.Pagination});
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
         }
 
         [HttpGet("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
         {
-            if (Spider.SpiderMaker.HasJob)
-                return Content("Spider already have a job, it will update entire website at every 3 am. ");
-            Spider.SpiderMaker.GetAJob();
-            JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(3, 0));
-            return Content("Set schedules Successfully, the Spider will update entire website at every 3 am.");
+            try
+            {
+                if (Spider.SpiderMaker.HasJob)
+                    return Content("Spider already have a job, it will update entire website at every 3 am. ");
+                Spider.SpiderMaker.GetAJob();
+                JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(3, 0));
+                return Content("Set schedules Successfully, the Spider will update entire website at every 3 am.");
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
         }
     }
 }
