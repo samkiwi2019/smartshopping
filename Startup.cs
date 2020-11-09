@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using Smartshopping.Data;
+using Smartshopping.Spider;
 
 namespace Smartshopping
 {
@@ -43,9 +44,12 @@ namespace Smartshopping
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             services.AddScoped<IProductRepo, SqlProductRepo>();
+            
+            services.AddScoped<IOutputer, Outputer>();
             
         }
 

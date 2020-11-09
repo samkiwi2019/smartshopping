@@ -6,8 +6,8 @@ namespace Smartshopping.Spider
 {
     public static class UrlManager
     {
-        public static List<string> NewUrls = new List<string>();
-        private static List<string> _oldUrls = new List<string>();
+        public static IList<string> NewUrls = new List<string>();
+        private static IList<string> _oldUrls = new List<string>();
 
         private static void AddNewUrl(string url)
         {
@@ -15,7 +15,7 @@ namespace Smartshopping.Spider
                 NewUrls = NewUrls.Append(url).ToList();
         }
 
-        public static void AddNewUrls(List<string> urls)
+        public static void AddNewUrls(IList<string> urls)
         {
             if (urls.Count == 0)
                 return;

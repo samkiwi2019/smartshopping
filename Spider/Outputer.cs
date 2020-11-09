@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Smartshopping.Data;
 using Smartshopping.Dtos;
@@ -7,7 +8,7 @@ using Smartshopping.Models;
 
 namespace Smartshopping.Spider
 {
-    public class Outputer
+    public class Outputer: IOutputer
     {
         private readonly IProductRepo _repository;
         private readonly IMapper _mapper;
@@ -18,9 +19,10 @@ namespace Smartshopping.Spider
             _mapper = mapper;
         }
 
-        public async void CollectData(IEnumerable<ProductCreateDto> products)
+        public async Task CollectData(IList<ProductCreateDto> products)
         {
-            foreach (var product in products)
+            var productModals = _mapper.Map<IList<Product>>(products);
+            foreach (var product in productModals)
             {
                 var oldProduct = await _repository.GetProductById(product.ProductId, product.Category);
                 if (oldProduct != null)
@@ -34,8 +36,7 @@ namespace Smartshopping.Spider
                               Convert.ToDouble(oldProduct.Price);
                 }
 
-                var productModal = _mapper.Map<Product>(product);
-                await _repository.CreateProduct(productModal);
+                await _repository.CreateProduct(product);
             }
 
             await _repository.SaveChanges();

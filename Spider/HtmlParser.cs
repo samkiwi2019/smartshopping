@@ -71,7 +71,7 @@ namespace Smartshopping.Spider
         }
 
 
-        public static async Task<(List<ProductCreateDto> products, List<string> urls)> Parse(string url)
+        public static async Task<(IList<ProductCreateDto> products, IList<string> urls)> Parse(string url)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);

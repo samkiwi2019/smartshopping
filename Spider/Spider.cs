@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AngleSharp;
 using AngleSharp.Common;
@@ -18,29 +19,38 @@ namespace Smartshopping.Spider
             HasJob = true;
         }
 
-        public static void Crawl()
+        public static async void Crawl()
         {
             UrlManager.AddNewUrls(HtmlParser.Urls);
 
             // Create a DI container
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddDbContext<MyContext>(opt => opt.UseMySql("server=localhost;user=root;password=66778899;database=DbSmartShopping"));
-            serviceCollection.AddTransient<IProductRepo, SqlProductRepo>();
-            serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            // var serviceCollection = new ServiceCollection();
+            // serviceCollection.AddDbContext<MyContext>(opt => opt.UseMySql("server=45.77.50.164;user=root;password=66778899;database=DbSmartShopping"));
+            // serviceCollection.AddScoped<IProductRepo, SqlProductRepo>();
+            // serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            // var serviceProvider = serviceCollection.BuildServiceProvider();
             // Get a class with DI
-            var outputer = ActivatorUtilities.CreateInstance<Outputer>(serviceProvider);
-            
-            while (UrlManager.HasNewUrl())
+            try
             {
-                var aNewUrl = UrlManager.GetNewUrl();
-                var result = HtmlParser.Parse(aNewUrl);
-                outputer.CollectData(result.Result.products);
-                UrlManager.AddNewUrls(result.Result.urls.ToList());
-                Console.WriteLine("Remaining: {0}", UrlManager.NewUrls.Count);
+                
+                var host = Program.CreateHostBuilder(new string[] { }).Build();
+                var serviceScope = host.Services.CreateScope();
+                var serviceProvider = serviceScope.ServiceProvider;
+                var outputer = serviceProvider.GetRequiredService<IOutputer>();
+                while (UrlManager.HasNewUrl())
+                {
+                    var aNewUrl = UrlManager.GetNewUrl();
+                    var (products, urls) = await HtmlParser.Parse(aNewUrl);
+                    await outputer.CollectData(products);
+                    UrlManager.AddNewUrls(urls);
+                    Console.WriteLine("Remaining: {0}", UrlManager.NewUrls.Count);
+                }
+                Console.WriteLine("Game over!");
             }
-
-            Console.WriteLine("Game over!");
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
