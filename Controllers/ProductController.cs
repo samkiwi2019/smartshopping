@@ -99,9 +99,7 @@ namespace Smartshopping.Controllers
         public ActionResult SetSpiderSchedule()
         {
             Spider.SpiderMaker.GetAJob();
-            return Content(Spider.SpiderMaker.HasJob
-                ? "The Spider already got a job!"
-                : "The Spider is going to update entiry website at every 6 AM!");
+            return Content("The Spider already got a job!");
         }
     }
 }
