@@ -18,5 +18,13 @@
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="dist\web.config" />
+      <_ContentIncludedByDefault Remove="dist\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="dist\appsettings.json" />
+      <_ContentIncludedByDefault Remove="dist\Smartshopping.deps.json" />
+      <_ContentIncludedByDefault Remove="dist\Smartshopping.runtimeconfig.json" />
+    </ItemGroup>
+
 
 </Project>

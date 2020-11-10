@@ -94,23 +94,15 @@ namespace Smartshopping.Controllers
             }
         }
 
+
         // GET /api/products/setSpiderSchedule
         [HttpPost("setSpiderSchedule")]
         public ActionResult SetSpiderSchedule()
         {
-            try
-            {
-                if (Spider.SpiderMaker.HasJob)
-                    return Content("Spider already got a job, it will update entire website at every 6 AM. ");
-                Spider.SpiderMaker.GetAJob();
-                // JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunEvery(1).Days().At(6, 0));
-                JobManager.AddJob(Spider.SpiderMaker.Crawl, (s) => s.ToRunNow().AndEvery(1).Days().At(6, 0));
-                return Content("Set schedules Successfully, the Spider will update entire website at every 6 AM.");
-            }
-            catch (Exception error)
-            {
-                return BadRequest(MyUtils.ExceptionMessage(error));
-            }
+            Spider.SpiderMaker.GetAJob();
+            return Content(Spider.SpiderMaker.HasJob
+                ? "The Spider already got a job!"
+                : "The Spider is going to update entiry website at every 6 AM!");
         }
     }
 }

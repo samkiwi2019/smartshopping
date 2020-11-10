@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Common;
 using AutoMapper;
+using FluentScheduler;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Smartshopping.Data;
@@ -16,6 +18,18 @@ namespace Smartshopping.Spider
 
         public static void GetAJob()
         {
+            if (HasJob) return;
+            
+            Console.WriteLine("set job");
+            JobManager.Initialize(new Registry());
+            JobManager.AddJob(
+                Crawl,
+                s => s.WithName("Every Minute")
+                    .ToRunEvery(1)
+                    .Days()
+                    .At(6,1)
+            );
+            
             HasJob = true;
         }
 
@@ -32,7 +46,6 @@ namespace Smartshopping.Spider
             // Get a class with DI
             try
             {
-                
                 var host = Program.CreateHostBuilder(new string[] { }).Build();
                 var serviceScope = host.Services.CreateScope();
                 var serviceProvider = serviceScope.ServiceProvider;
