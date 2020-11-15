@@ -1,49 +1,34 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Common;
-using AutoMapper;
-using FluentScheduler;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Smartshopping.Data;
+using Quartz;  
+using Quartz.Impl;
 
 namespace Smartshopping.Spider
 {
     public class SpiderMaker
     {
         public static bool HasJob;
-
         public static void GetAJob()
         {
             if (HasJob) return;
-            
-            Console.WriteLine("set job");
-            JobManager.Initialize(new Registry());
-            JobManager.AddJob(
-                Crawl,
-                s => s.WithName("Every Minute")
-                    .ToRunEvery(1)
-                    .Days()
-                    .At(6,1)
-            );
-            
             HasJob = true;
+            
+            ISchedulerFactory schedf = new StdSchedulerFactory();
+            var sched = schedf.GetScheduler().Result;
+            sched.Start();
+            var job = JobBuilder.Create<MessageJob>().Build();   
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity("trigger1", "group1")
+                .StartNow()
+                .WithCronSchedule("0 0 6 * * ? *") // 每天的6：00运行
+                .Build();
+            sched.ScheduleJob(job, trigger).Wait();
         }
 
         public static async void Crawl()
         {
             UrlManager.AddNewUrls(HtmlParser.Urls);
-
-            // Create a DI container
-            // var serviceCollection = new ServiceCollection();
-            // serviceCollection.AddDbContext<MyContext>(opt => opt.UseMySql("server=45.77.50.164;user=root;password=66778899;database=DbSmartShopping"));
-            // serviceCollection.AddScoped<IProductRepo, SqlProductRepo>();
-            // serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            // var serviceProvider = serviceCollection.BuildServiceProvider();
-            // Get a class with DI
             try
             {
                 var host = Program.CreateHostBuilder(new string[] { }).Build();
@@ -63,6 +48,18 @@ namespace Smartshopping.Spider
             catch (Exception e)
             {
                 Console.WriteLine(e);
+            }
+        }
+        
+        public class MessageJob : IJob
+        {
+            public Task Execute(IJobExecutionContext context)
+            {
+                return Task.Run(() =>
+                {
+                    Console.WriteLine("go go go...");
+                    Crawl();
+                });
             }
         }
     }

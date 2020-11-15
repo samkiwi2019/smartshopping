@@ -115,7 +115,7 @@ namespace Smartshopping.Controllers
             // var perPage = obj.perPage != null ? Convert.ToInt32(obj.perPage) : 10 ;
             // var categoryId = obj.categoryId != null ? Convert.ToInt32(obj.categoryId) : 0;
 
-            string rawValue = await GetRawBodyStringAsync(Request);
+            var rawValue = await GetRawBodyStringAsync(Request);
             var query = Newtonsoft.Json.JsonConvert.DeserializeObject<Query>(rawValue);
             return NoContent();
         }
