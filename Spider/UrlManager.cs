@@ -4,18 +4,28 @@ using System.Linq;
 
 namespace Smartshopping.Spider
 {
-    public static class UrlManager
+    public class UrlManager
     {
-        public static IList<string> NewUrls = new List<string>();
-        private static IList<string> _oldUrls = new List<string>();
+        public IList<string> NewUrls = new List<string>
+        {
+            "https://www.paknsaveonline.co.nz/category/fresh-foods-and-bakery?pg=1",
+            "https://www.paknsaveonline.co.nz/category/pantry?pg=1",
+            "https://www.paknsaveonline.co.nz/category/drinks?pg=1",
+            "https://www.paknsaveonline.co.nz/category/beer-cider-and-wine?pg=1",
+            "https://www.paknsaveonline.co.nz/category/personal-care?pg=1",
+            "https://www.paknsaveonline.co.nz/category/baby-toddler-and-kids?pg=1",
+            "https://www.paknsaveonline.co.nz/category/pets?pg=1",
+            "https://www.paknsaveonline.co.nz/category/kitchen-dining-and-household?pg=1",
+        };
+        private IList<string> _oldUrls = new List<string>();
 
-        private static void AddNewUrl(string url)
+        private void AddNewUrl(string url)
         {
             if (!NewUrls.Contains(url) && !_oldUrls.Contains(url))
                 NewUrls = NewUrls.Append(url).ToList();
         }
 
-        public static void AddNewUrls(IList<string> urls)
+        public void AddNewUrls(IList<string> urls)
         {
             if (urls.Count == 0)
                 return;
@@ -24,12 +34,12 @@ namespace Smartshopping.Spider
                 AddNewUrl(t);
         }
 
-        public static bool HasNewUrl()
+        public bool HasNewUrl()
         {
             return NewUrls.Count != 0;
         }
 
-        public static string? GetNewUrl()
+        public string? GetNewUrl()
         {
             if (NewUrls.Count <= 0) return null;
             

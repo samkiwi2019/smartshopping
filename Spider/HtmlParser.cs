@@ -9,21 +9,9 @@ using Smartshopping.Dtos;
 
 namespace Smartshopping.Spider
 {
-    public static class HtmlParser
+    public class HtmlParser
     {
-        public static List<string> Urls = new List<string>
-        {
-            "https://www.paknsaveonline.co.nz/category/fresh-foods-and-bakery?pg=1",
-            "https://www.paknsaveonline.co.nz/category/pantry?pg=1",
-            "https://www.paknsaveonline.co.nz/category/drinks?pg=1",
-            "https://www.paknsaveonline.co.nz/category/beer-cider-and-wine?pg=1",
-            "https://www.paknsaveonline.co.nz/category/personal-care?pg=1",
-            "https://www.paknsaveonline.co.nz/category/baby-toddler-and-kids?pg=1",
-            "https://www.paknsaveonline.co.nz/category/pets?pg=1",
-            "https://www.paknsaveonline.co.nz/category/kitchen-dining-and-household?pg=1",
-        };
-
-        private static async Task<List<ProductCreateDto>> GetNewData(string url, IDocument document)
+        private async Task<List<ProductCreateDto>> GetNewData(string url, IDocument document)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
             
@@ -61,7 +49,7 @@ namespace Smartshopping.Spider
             return products;
         }
 
-        private static List<string> GetNewUrls(IDocument document)
+        private List<string> GetNewUrls(IDocument document)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
             
@@ -71,7 +59,7 @@ namespace Smartshopping.Spider
         }
 
 
-        public static async Task<(IList<ProductCreateDto> products, IList<string> urls)> Parse(string url)
+        public async Task<(IList<ProductCreateDto> products, IList<string> urls)> Parse(string url)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);

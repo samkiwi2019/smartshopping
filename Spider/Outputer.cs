@@ -27,7 +27,6 @@ namespace Smartshopping.Spider
                 var oldProduct = await _repository.GetProductById(product.ProductId, product.Category);
                 if (oldProduct != null)
                 {
-                    Console.WriteLine(oldProduct.ProductId);
                     oldProduct.Latest = false;
                     product.Compare =
                         product.Price == oldProduct.Price

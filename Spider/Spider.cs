@@ -28,30 +28,32 @@ namespace Smartshopping.Spider
 
         public static async void Crawl()
         {
-            UrlManager.AddNewUrls(HtmlParser.Urls);
+            var urlManager = new UrlManager();
+            var htmlParser = new HtmlParser();
+            
             try
             {
-                var host = Program.CreateHostBuilder(new string[] { }).Build();
-                var serviceScope = host.Services.CreateScope();
-                var serviceProvider = serviceScope.ServiceProvider;
-                var outputer = serviceProvider.GetRequiredService<IOutputer>();
-                while (UrlManager.HasNewUrl())
+                var outputer = Program.CreateHostBuilder(new string[] { })
+                    .Build().Services
+                    .CreateScope().ServiceProvider
+                    .GetRequiredService<IOutputer>();
+                
+                while (urlManager.HasNewUrl())
                 {
-                    var aNewUrl = UrlManager.GetNewUrl();
-                    var (products, urls) = await HtmlParser.Parse(aNewUrl);
+                    var aNewUrl = urlManager.GetNewUrl();
+                    var (products, urls) = await htmlParser.Parse(aNewUrl);
                     await outputer.CollectData(products);
-                    UrlManager.AddNewUrls(urls);
-                    Console.WriteLine("Remaining: {0}", UrlManager.NewUrls.Count);
+                    urlManager.AddNewUrls(urls);
                 }
-                Console.WriteLine("Game over!");
+                Console.WriteLine("Goodbye for today:" + DateTime.Now);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
         }
-        
-        public class MessageJob : IJob
+
+        private class MessageJob : IJob
         {
             public Task Execute(IJobExecutionContext context)
             {
