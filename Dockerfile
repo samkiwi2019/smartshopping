@@ -25,6 +25,6 @@ ENTRYPOINT ["dotnet", "Smartshopping.dll"]
 # dotnet restore
 # dotnet publish --framework netcoreapp3.1 --configuration Release --output dist
 # docker build . -t spider-api -f Dockerfile
-# docker tag b738c0aa1879 dockersam2019/spider-app:1.0
-# docker push dockersam2019/spider-app:1.0
-# docker stop 96df28bd7ace && docker run -d -p 5000:80 --rm --name spider-api b738c0aa1879
+# docker tag 59fc46ce8212 dockersam2019/spider-app:latest
+# docker push dockersam2019/spider-app:latest
+# docker stop 9ce0cfbc3385 && docker run -d -p 5000:80 --rm --name spider-api 59fc46ce8212
