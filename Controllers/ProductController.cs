@@ -33,8 +33,6 @@ namespace Smartshopping.Controllers
         public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10, string category = "",
             bool isPromotion = false)
         {
-            q ??= "";
-            category ??= "";
             try
             {
                 var query = _repository.GetProducts(q, page, pageSize, category, isPromotion);

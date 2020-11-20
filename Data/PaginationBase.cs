@@ -11,7 +11,7 @@ namespace Smartshopping.Data
         public int PageSize { get; set; } 
         public int Total { get; set; } 
         
-        public PaginationBase(IQueryable<T> list, int page, int pageSize)
+        public PaginationBase(IEnumerable<T> list, int page, int pageSize)
         {
             Page = page < 1 ? 1 : page;
             PageSize = pageSize < 1 ? 10 : pageSize;
