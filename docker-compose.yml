@@ -32,6 +32,8 @@ services:
       MYSQL_DATABASE: "DbSmartShopping"
     ports:
       - "13306:3306"
+    security_opt:
+      - seccomp:unconfined
     networks:
       - localdev
   
