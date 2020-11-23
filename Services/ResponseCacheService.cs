@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Smartshopping.Services
 {
@@ -17,7 +18,11 @@ namespace Smartshopping.Services
         public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLiveSeconds)
         {
             if (response == null) return;
-            var serializedResponse = JsonConvert.SerializeObject(response);
+            var serializedResponse = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()}
+            );
             await _distributedCache.SetStringAsync(cacheKey, serializedResponse, new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = timeToLiveSeconds

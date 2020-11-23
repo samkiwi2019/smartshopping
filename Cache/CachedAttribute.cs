@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Smartshopping.Services;
 
 namespace Smartshopping.Cache
@@ -48,7 +50,6 @@ namespace Smartshopping.Cache
                 context.Result = contentResult;
                 return;
             }
-
             var executedContext = await next();
             if (executedContext.Result is OkObjectResult okObjectResult)
             {
