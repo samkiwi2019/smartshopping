@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore;
 using Smartshopping.Models;
 
@@ -19,17 +21,17 @@ namespace Smartshopping.Data
             _ctx = ctx;
         }
 
-        public IQueryable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
+        public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
         {
-            var products = _ctx.Products
-                .Where(item =>
-                    item.Latest 
-                    && (!isPromotion || item.Prefix.Length > 0) 
+            var products = _ctx.Products.Where(item => item.Latest)
+                .Where(item => 
+                    item.Name.ToLower().Contains(q.ToLower())
                     && item.Category.ToLower().Contains(category.ToLower())
-                    && item.Name.ToLower().Contains(q.ToLower())
-                    )
-                .OrderByDescending(item => item.Date)
-                .ThenBy(item => item.Compare);
+                    && (!isPromotion || item.Prefix.Length > 0))
+                .AsEnumerable()
+                .Where(item => item.Date.Subtract(DateTime.Now).Days == 0)
+                .OrderBy(item => item.Compare);
+            
             return products;
         }
 
