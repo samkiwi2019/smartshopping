@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,8 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json.Serialization;
 using Smartshopping.Data;
+using Smartshopping.Installers;
+using Smartshopping.Options;
 using Smartshopping.Spider;
 
 namespace Smartshopping
@@ -26,31 +32,7 @@ namespace Smartshopping
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // to connect mysql 
-            services.AddDbContext<MyContext>(opt => opt.UseMySql(Configuration.GetConnectionString("connection")));
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder => builder
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                );
-            });
-            
-            services.AddControllers().AddNewtonsoftJson(s =>
-            {
-                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });
-
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            
-            services.AddScoped<IProductRepo, SqlProductRepo>();
-            
-            services.AddScoped<IOutputer, Outputer>();
-            
+            services.InstallServicesInAssembly(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +42,18 @@ namespace Smartshopping
             {
                 app.UseDeveloperExceptionPage();
             }
+            var swaggerOptions = new SwaggerOptions();
+            // config来源于配置文件
+            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = swaggerOptions.JsonRoute;
+            });
+
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
+            });
 
             app.UseHttpsRedirection();
 

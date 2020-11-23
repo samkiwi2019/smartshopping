@@ -28,7 +28,8 @@ namespace Smartshopping.Data
                     && item.Category.ToLower().Contains(category.ToLower())
                     && item.Name.ToLower().Contains(q.ToLower())
                     )
-                .OrderBy(item => item.Compare);
+                .OrderByDescending(item => item.Date)
+                .ThenBy(item => item.Compare);
             return products;
         }
 

@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AngleSharp.Common;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Smartshopping.Cache;
 using Smartshopping.Data;
 using Smartshopping.Dtos;
 using Smartshopping.Library;
@@ -30,6 +30,7 @@ namespace Smartshopping.Controllers
 
         // GET /api/products
         [HttpGet]
+        [Cached(600)]
         public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10, string category = "",
             bool isPromotion = false)
         {
@@ -40,7 +41,7 @@ namespace Smartshopping.Controllers
                 var query = _repository.GetProducts(q, page, pageSize, category, isPromotion);
                 var pagedResult = new PagedResult<Product>(query, page, pageSize);
                 var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
-                return new JsonResult(new {items, pagination = pagedResult.Pagination});
+                return Ok(new {items, pagination = pagedResult.Pagination});
             }
             catch (Exception error)
             {
@@ -50,6 +51,7 @@ namespace Smartshopping.Controllers
 
         // GET /api/products/{productId}
         [HttpGet("{productId}")]
+        [Cached(600)]
         public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId, string category = "")
         {
             try
@@ -65,6 +67,7 @@ namespace Smartshopping.Controllers
 
         // GET /api/products/{productId}/all
         [HttpGet("{productId}/all")]
+        [Cached(600)]
         public async Task<ActionResult<ProductReadDto>> GetProductsByProductId(string productId,
             int page = 1,
             int pageSize = 10)
@@ -83,6 +86,7 @@ namespace Smartshopping.Controllers
 
         // GET /api/products/related
         [HttpGet("related")]
+        [Cached(600)]
         public async Task<ActionResult<IList<ProductReadDto>>> GetProductsByRelated(string name, string category = "")
         {
             try
