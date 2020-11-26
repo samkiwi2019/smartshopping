@@ -18,5 +18,9 @@ namespace Smartshopping.Data
         Task<bool> SaveChanges();
         
         Task CreateProduct(Product product);
+
+        Task<bool> MarkProductsToHistory();
+
+        decimal GetAvgPriceById(string id);
     }
 }

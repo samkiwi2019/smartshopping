@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;  
 using Quartz.Impl;
+using Smartshopping.Data;
 
 namespace Smartshopping.Spider
 {
@@ -33,10 +34,14 @@ namespace Smartshopping.Spider
             
             try
             {
-                var outputer = Program.CreateHostBuilder(new string[] { })
+                var services = Program.CreateHostBuilder(new string[] { })
                     .Build().Services
-                    .CreateScope().ServiceProvider
-                    .GetRequiredService<IOutputer>();
+                    .CreateScope().ServiceProvider;
+                
+                var outputer = services.GetRequiredService<IOutputer>();
+                var repo = services.GetRequiredService<IProductRepo>();
+                
+                await repo.MarkProductsToHistory();
                 
                 while (urlManager.HasNewUrl())
                 {
@@ -44,6 +49,7 @@ namespace Smartshopping.Spider
                     var (products, urls) = await htmlParser.Parse(aNewUrl);
                     await outputer.CollectData(products);
                     urlManager.AddNewUrls(urls);
+                    Console.WriteLine("Remaining:" + urlManager.NewUrls.Count);
                 }
                 Console.WriteLine("Goodbye for today:" + DateTime.Now);
             }

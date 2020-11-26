@@ -24,20 +24,11 @@ namespace Smartshopping.Spider
             var productModals = _mapper.Map<IList<Product>>(products);
             foreach (var product in productModals)
             {
-                var oldProduct = await _repository.GetProductById(product.ProductId, product.Category);
-                if (oldProduct != null)
-                {
-                    oldProduct.Latest = false;
-                    product.Compare =
-                        product.Price == oldProduct.Price
-                            ? 1
-                            : (Convert.ToDouble(product.Price) - Convert.ToDouble(oldProduct.Price)) /
-                              Convert.ToDouble(oldProduct.Price);
-                }
-
+                var avg = _repository.GetAvgPriceById(product.ProductId);
+                var diff = avg == -999 ? 1 : (Convert.ToDecimal(product.Price) - avg) / avg;
+                product.Compare = Convert.ToDouble(diff);
                 await _repository.CreateProduct(product);
             }
-
             await _repository.SaveChanges();
         }
     }

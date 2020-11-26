@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore;
+using Smartshopping.Library;
 using Smartshopping.Models;
 
 namespace Smartshopping.Data
@@ -28,8 +24,6 @@ namespace Smartshopping.Data
                     item.Name.ToLower().Contains(q.ToLower())
                     && item.Category.ToLower().Contains(category.ToLower())
                     && (!isPromotion || item.Prefix.Length > 0))
-                .AsEnumerable()
-                .Where(item => item.Date.Subtract(DateTime.Now).Days == 0)
                 .OrderBy(item => item.Compare);
             
             return products;
@@ -72,6 +66,31 @@ namespace Smartshopping.Data
             }
 
             await _ctx.Products.AddAsync(product);
+        }
+
+        public async Task<bool> MarkProductsToHistory()
+        {
+             _ctx.Products.Where(item => item.Latest).AsEnumerable().SetValue(item => item.Latest = false);
+             return await _ctx.SaveChangesAsync() > 0;
+        }
+
+        public decimal GetAvgPriceById(string id)
+        {
+            var res = _ctx.Products
+                .Where(item => item.ProductId == id)
+                .OrderByDescending(item => item.Date)
+                .Take(30)
+                .AsEnumerable()
+                .GroupBy(
+                    item => item.Latest.ToString(),
+                    item => Convert.ToDecimal(item.Price), 
+                    (key, products) => new
+                    {
+                        avg = products.AsQueryable().Average()
+                    }
+                ).FirstOrDefault();
+
+            return res?.avg ?? -999;
         }
     }
 }
