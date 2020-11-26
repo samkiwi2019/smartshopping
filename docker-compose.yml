@@ -12,7 +12,7 @@ services:
       - "5000:80"
       - "5001:443"
     depends_on:
-      - mysql
+      - mysql8
       - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -24,9 +24,9 @@ services:
     networks:
       - localdev
   
-  mysql:
+  mysql8:
     image: mysql
-    container_name: mysql
+    container_name: mysql8
     volumes:
       - ~/data/mysql:/var/lib/mysql  # 数据目录
     environment:
