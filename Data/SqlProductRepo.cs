@@ -51,11 +51,12 @@ namespace Smartshopping.Data
                 .ToListAsync();
         }
 
-        public async Task<IList<Product>> GetProductsById(string id, int page = 1, int pageSize = 10)
+        public async Task<IList<Product>> GetProductsById(string id)
         {
             return await _ctx.Products
                 .Where(item => item.ProductId == id)
-                .Skip(Math.Max(page - 1, 0) * pageSize).Take(pageSize).ToListAsync();
+                .OrderByDescending(item => item.Date)
+                .Take(100).ToListAsync();
         }
 
         public async Task<bool> SaveChanges()
