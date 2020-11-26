@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 
 networks:
   localdev:
@@ -12,7 +12,7 @@ services:
       - "5000:80"
       - "5001:443"
     depends_on:
-      - mysql8
+      - db-server
       - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -23,15 +23,15 @@ services:
       - ~/https-key:/https:ro
     networks:
       - localdev
-  
-  mysql8:
+
+  db-server:
     image: mysql
-    container_name: mysql8
-    volumes:
-      - ~/data/mysql:/var/lib/mysql  # 数据目录
+    container_name: db-server
     environment:
       MYSQL_ROOT_PASSWORD: "66778899"
       MYSQL_DATABASE: "DbSmartShopping"
+    volumes:
+      - ~/data/mysql:/var/lib/mysql  # 数据目录
     ports:
       - "13306:3306"
     security_opt:
