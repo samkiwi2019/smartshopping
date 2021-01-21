@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace Smartshopping.Installers
                         .AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
+                        .SetPreflightMaxAge(TimeSpan.FromMinutes(10))
                 );
             });
 
