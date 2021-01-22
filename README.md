@@ -1,5 +1,4 @@
 # SmartShopping test
-13
 #### Description
 .net core APIs
 
