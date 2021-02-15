@@ -70,7 +70,7 @@ namespace Smartshopping.Data
 
         public async Task<bool> MarkProductsToHistory()
         {
-             _ctx.Products.Where(item => item.Latest).AsEnumerable().SetValue(item => item.Latest = false);
+             _ctx.Products.Where(item => item.Latest).SetValue(item => item.Latest = false);
              return await _ctx.SaveChangesAsync() > 0;
         }
 
