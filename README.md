@@ -36,6 +36,8 @@ Software architecture description
 5. The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
 6. The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
 
+
+#### How to test your code performance
 ```c#
     TimeSpan ts1 = new TimeSpan(DateTime.Now.Ticks);
     // your code
@@ -44,15 +46,4 @@ Software architecture description
     string spanTotalSeconds = ts.TotalSeconds.ToString();
     Console.WriteLine(ts.ToString());
     Console.WriteLine(spanTotalSeconds);
-    
-    if (searchParameter.Query != null)
-            {
-                foreach (var q in searchParameter.Query)
-                {
-                    if (q.Value == 0)
-                        query = ObjectReflectionExtensions.OrderBy(query, q.Key);
-                    else
-                        query = ObjectReflectionExtensions.OrderByDescending(query, q.Key);
-                }
-            }
 ```
