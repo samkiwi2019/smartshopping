@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Smartshopping.Models;
 
 namespace Smartshopping.Data
@@ -12,7 +13,7 @@ namespace Smartshopping.Data
         public PaginationBase<T> Pagination { get; set; }
         public IList<T> Items { get; set; }
 
-        public PagedResult(IEnumerable<T> list, int page, int pageSize)
+        public PagedResult(IQueryable<T> list, int page, int pageSize)
         {
             Pagination = new PaginationBase<T>(list, page, pageSize);
             Items = list.Skip(Math.Max(page - 1, 0) * pageSize).Take(pageSize).ToList();

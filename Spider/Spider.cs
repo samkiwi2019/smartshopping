@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;  
 using Quartz.Impl;
 using Smartshopping.Data;
+using Smartshopping.Data.IRepos;
 
 namespace Smartshopping.Spider
 {
@@ -39,7 +40,7 @@ namespace Smartshopping.Spider
                     .CreateScope().ServiceProvider;
                 
                 var outputer = services.GetRequiredService<IOutputer>();
-                var repo = services.GetRequiredService<IProductRepo>();
+                var repo = services.GetRequiredService<IPakProductRepo>();
                 
                 await repo.MarkProductsToHistory();
                 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Smartshopping.Data;
+using Smartshopping.Data.IRepos;
 using Smartshopping.Dtos;
 using Smartshopping.Models;
 
@@ -10,10 +11,10 @@ namespace Smartshopping.Spider
 {
     public class Outputer: IOutputer
     {
-        private readonly IProductRepo _repository;
+        private readonly IPakProductRepo _repository;
         private readonly IMapper _mapper;
 
-        public Outputer(IProductRepo repository, IMapper mapper)
+        public Outputer(IPakProductRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

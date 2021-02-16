@@ -1,35 +1,52 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Smartshopping.Cache;
 using Smartshopping.Data;
+using Smartshopping.Data.IRepos;
 using Smartshopping.Dtos;
 using Smartshopping.Library;
 using Smartshopping.Models;
 
 namespace Smartshopping.Controllers
 {
-    [Route("api/products")]
+    [Route("api/v1")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class PakProductController: CommonController
     {
-        private readonly IProductRepo _repository;
+        private readonly IPakProductRepo _repository;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepo repository, IMapper mapper)
+        public PakProductController(IPakProductRepo pakProductRepo, IMapper mapper)
         {
-            _repository = repository;
+            _repository = pakProductRepo;
             _mapper = mapper;
         }
-
-        // GET /api/products
-        [HttpGet]
+        
+        [HttpGet("products")]
+        [Cached(600)]
+        public async Task<IActionResult> GetItems()
+        {
+            try
+            {
+                var searchParams = await GetSearchParams();
+                var pagedResult = _repository.GetPagedItems(searchParams);
+                var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
+                var pagination = pagedResult.Pagination;
+                return Ok(new {items, pagination});
+            }
+            catch (Exception error)
+            {
+                return BadRequest(MyUtils.ExceptionMessage(error));
+            }
+        }
+        
+        
+          // GET /api/products
+        [HttpGet("[action]")]
         [Cached(600)]
         public ActionResult GetProducts(string q = "", int page = 1, int pageSize = 10, string category = "",
             bool isPromotion = false)
@@ -39,7 +56,7 @@ namespace Smartshopping.Controllers
             try
             {
                 var query = _repository.GetProducts(q, page, pageSize, category, isPromotion);
-                var pagedResult = new PagedResult<Product>(query, page, pageSize);
+                var pagedResult = new PagedResult<Product>(query.AsQueryable(), page, pageSize);
                 var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
                 return Ok(new {items, pagination = pagedResult.Pagination});
             }

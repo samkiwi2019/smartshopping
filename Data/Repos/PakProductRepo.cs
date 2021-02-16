@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Smartshopping.Data.IRepos;
 using Smartshopping.Library;
 using Smartshopping.Models;
 
-namespace Smartshopping.Data
+namespace Smartshopping.Data.Repos
 {
-    public class SqlProductRepo : IProductRepo
+    public class PakProductRepo: CommonRepo<Product>, IPakProductRepo
     {
+        private readonly DbSet<Product> _dbSet;
         private readonly MyContext _ctx;
-
-        public SqlProductRepo(MyContext ctx)
+        public PakProductRepo(MyContext context) : base(context)
         {
-            _ctx = ctx;
+            _dbSet = context.Set<Product>();
+            _ctx = context;
         }
 
-        public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
+          public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
         {
             var products = _ctx.Products.Where(item => item.Latest)
                 .Where(item => 

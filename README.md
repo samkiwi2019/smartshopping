@@ -46,4 +46,5 @@ Software architecture description
     string spanTotalSeconds = ts.TotalSeconds.ToString();
     Console.WriteLine(ts.ToString());
     Console.WriteLine(spanTotalSeconds);
+    
 ```

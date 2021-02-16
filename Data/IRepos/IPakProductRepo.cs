@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Smartshopping.Models;
 
-namespace Smartshopping.Data
+namespace Smartshopping.Data.IRepos
 {
-    public interface IProductRepo
+    public interface IPakProductRepo: ICommonRepo<Product>
     {
         IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion);
         

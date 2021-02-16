@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Smartshopping.Models
 {
-    public class Product
+    public class Product: BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         [Required] public string ProductId { get; set; }
 
@@ -16,7 +16,7 @@ namespace Smartshopping.Models
         
         [Required] public string Category { get; set; }
         
-        [Required] public string Name { get; set; }
+        [Required] public new string Name { get; set; }
         
         [Required] public string Img { get; set; }
         
@@ -28,7 +28,7 @@ namespace Smartshopping.Models
         
         [Required] public double Compare { get; set; }
         
-        [Required] public bool Latest { get; set; }
+        [Required] public new bool Latest { get; set; }
         
         [Required] public DateTime Date { get; set; }
     }

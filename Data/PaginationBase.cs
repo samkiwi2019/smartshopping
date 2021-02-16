@@ -7,13 +7,13 @@ namespace Smartshopping.Data
 {
     public class PaginationBase<T>
     {
-        public int Page { get; set; } 
-        public int PageSize { get; set; } 
+        public int CurrPage { get; set; }
+        public int PageSize { get; set; }
         public int Total { get; set; } 
         
-        public PaginationBase(IEnumerable<T> list, int page, int pageSize)
+        public PaginationBase(IQueryable<T> list, int currPage, int pageSize)
         {
-            Page = page < 1 ? 1 : page;
+            CurrPage = currPage < 1 ? 1 : currPage;
             PageSize = pageSize < 1 ? 10 : pageSize;
             Total = list.Count();
         }
