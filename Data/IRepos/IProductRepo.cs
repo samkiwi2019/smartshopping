@@ -4,7 +4,7 @@ using Smartshopping.Models;
 
 namespace Smartshopping.Data.IRepos
 {
-    public interface IPakProductRepo: ICommonRepo<Product>
+    public interface IProductRepo: ICommonRepo<Product>
     {
         IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion);
         

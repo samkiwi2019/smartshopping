@@ -40,7 +40,7 @@ namespace Smartshopping.Spider
                     .CreateScope().ServiceProvider;
                 
                 var outputer = services.GetRequiredService<IOutputer>();
-                var repo = services.GetRequiredService<IPakProductRepo>();
+                var repo = services.GetRequiredService<IProductRepo>();
                 
                 await repo.MarkProductsToHistory();
                 

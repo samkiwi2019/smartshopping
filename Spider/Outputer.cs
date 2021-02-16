@@ -11,10 +11,10 @@ namespace Smartshopping.Spider
 {
     public class Outputer: IOutputer
     {
-        private readonly IPakProductRepo _repository;
+        private readonly IProductRepo _repository;
         private readonly IMapper _mapper;
 
-        public Outputer(IPakProductRepo repository, IMapper mapper)
+        public Outputer(IProductRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

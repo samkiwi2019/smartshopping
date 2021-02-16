@@ -1,11 +1,9 @@
 using System;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Smartshopping.Data;
 using Smartshopping.Data.IRepos;
 using Smartshopping.Data.Repos;
 using Smartshopping.Spider;
@@ -32,7 +30,7 @@ namespace Smartshopping.Installers
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
-            services.AddScoped<IPakProductRepo, PakProductRepo>();
+            services.AddScoped<IProductRepo, ProductRepo>();
             
             services.AddScoped<IOutputer, Outputer>();
         }

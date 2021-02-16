@@ -18,28 +18,28 @@ namespace Smartshopping.Data.Repos
             _dbSet = context.Set<T>();
         }
         
-        public Task<T> Create(T t)
+        public virtual Task<T> Create(T t)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<T> Delete(int id)
+        public virtual Task<T> Delete(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<T> Update(T t)
+        public virtual Task<T> Update(T t)
         {
             throw new System.NotImplementedException();
         }
 
-        public PagedResult<T> GetPagedItems(SearchParams searchParams)
+        public virtual PagedResult<T> GetPagedItems(SearchParams searchParams)
         {
             var items = Search(searchParams);
             return new PagedResult<T>(items, searchParams.CurrPage, searchParams.PageSize);
         }
 
-        public async Task<T> GetItemById(int id)
+        public virtual async Task<T> GetItemById(int id)
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -48,7 +48,8 @@ namespace Smartshopping.Data.Repos
         {
             return _dbSet
                 .Where(product => product.Latest)
-                .WhereIf(!string.IsNullOrEmpty(searchParams.Q), product => product.Name.Contains(searchParams.Q));
+                .WhereIf(!string.IsNullOrEmpty(searchParams.Q), product => product.Name.Contains(searchParams.Q))
+                .MultipleOrderByIf(searchParams.SortBy != null, searchParams.SortBy);
         }
     }
 }

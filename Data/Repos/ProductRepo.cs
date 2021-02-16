@@ -9,11 +9,11 @@ using Smartshopping.Models;
 
 namespace Smartshopping.Data.Repos
 {
-    public class PakProductRepo: CommonRepo<Product>, IPakProductRepo
+    public class ProductRepo: CommonRepo<Product>, IProductRepo
     {
         private readonly DbSet<Product> _dbSet;
         private readonly MyContext _ctx;
-        public PakProductRepo(MyContext context) : base(context)
+        public ProductRepo(MyContext context) : base(context)
         {
             _dbSet = context.Set<Product>();
             _ctx = context;

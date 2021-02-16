@@ -15,14 +15,14 @@ namespace Smartshopping.Controllers
 {
     [Route("api/v1")]
     [ApiController]
-    public class PakProductController: CommonController
+    public class ProductController: CommonController
     {
-        private readonly IPakProductRepo _repository;
+        private readonly IProductRepo _repository;
         private readonly IMapper _mapper;
 
-        public PakProductController(IPakProductRepo pakProductRepo, IMapper mapper)
+        public ProductController(IProductRepo productRepo, IMapper mapper)
         {
-            _repository = pakProductRepo;
+            _repository = productRepo;
             _mapper = mapper;
         }
         
