@@ -5,9 +5,10 @@ namespace Smartshopping.Data.IRepos
 {
     public interface ICommonRepo<T>
     {
-        Task<T> Create(T t);
-        Task<T> Delete(int id);
-        Task<T> Update(T t);
+        Task<bool> Create(T t);
+        Task<bool> Delete(int id);
+        Task<bool> Update(T t);
+        Task<bool> SaveChange();
         PagedResult<T> GetPagedItems(SearchParams searchParams);
         Task<T> GetItemById(int id);
         IQueryable<T> Search(SearchParams searchParams);
