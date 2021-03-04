@@ -14,7 +14,7 @@ namespace Smartshopping.Models
 
         [Required] public string Supplier { get; set; }
         
-        [Required] public string Category { get; set; }
+        [Required] public new string Category { get; set; }
         
         [Required] public new string Name { get; set; }
         

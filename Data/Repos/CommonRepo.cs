@@ -48,7 +48,8 @@ namespace Smartshopping.Data.Repos
         {
             return _dbSet
                 .Where(product => product.Latest)
-                .WhereIf(!string.IsNullOrEmpty(searchParams.Q), product => product.Name.Contains(searchParams.Q))
+                .WhereIf(!string.IsNullOrEmpty(searchParams.Category), product => product.Category.Contains(searchParams.Category))
+                .WhereIf(!string.IsNullOrEmpty(searchParams.Query), product => product.Name.ToLower().Contains(searchParams.Query.ToLower()))
                 .MultipleOrderByIf(searchParams.SortBy != null, searchParams.SortBy);
         }
     }

@@ -26,7 +26,7 @@ namespace Smartshopping.Controllers
             _mapper = mapper;
         }
         
-        [HttpGet("products")]
+        [HttpPost("products")]
         [Cached(600)]
         public async Task<IActionResult> GetItems()
         {

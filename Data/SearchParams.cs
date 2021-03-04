@@ -4,7 +4,7 @@ namespace Smartshopping.Data
 {
     public class SearchParams
     {
-        public string Q { get; set; } = "";
+        public string Query { get; set; } = "";
         public int CurrPage { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public string Category { get; set; } = "";
