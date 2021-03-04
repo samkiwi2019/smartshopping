@@ -11,17 +11,13 @@ namespace Smartshopping.Data.Repos
 {
     public class ProductRepo: CommonRepo<Product>, IProductRepo
     {
-        private readonly DbSet<Product> _dbSet;
-        private readonly MyContext _ctx;
         public ProductRepo(MyContext context) : base(context)
         {
-            _dbSet = context.Set<Product>();
-            _ctx = context;
         }
-
-          public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
+        
+        public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
         {
-            var products = _ctx.Products.Where(item => item.Latest)
+            var products = DbSet.Where(item => item.Latest)
                 .Where(item => 
                     item.Name.ToLower().Contains(q.ToLower())
                     && item.Category.ToLower().Contains(category.ToLower())
@@ -33,14 +29,14 @@ namespace Smartshopping.Data.Repos
 
         public async Task<Product> GetProductById(string id, string category)
         {
-            return await _ctx.Products
+            return await DbSet
                 .OrderByDescending(item => item.Date)
                 .FirstOrDefaultAsync(item => item.ProductId == id && item.Category.ToLower().Contains(category));
         }
 
         public async Task<IList<Product>> GetProductByRelated(string name, string category)
         {
-            return await _ctx.Products
+            return await DbSet
                 .Where(item => item.Name.ToLower().Contains(name.ToLower()))
                 .Where(item => item.Latest)
                 .OrderBy(item => Convert.ToDecimal(item.Price))
@@ -49,7 +45,7 @@ namespace Smartshopping.Data.Repos
 
         public async Task<IList<Product>> GetProductsById(string id)
         {
-            return await _ctx.Products
+            return await DbSet
                 .Where(item => item.ProductId == id)
                 .OrderByDescending(item => item.Date)
                 .Take(100).ToListAsync();
@@ -57,7 +53,7 @@ namespace Smartshopping.Data.Repos
 
         public async Task<bool> SaveChanges()
         {
-            return await _ctx.SaveChangesAsync() > 0;
+            return await Ctx.SaveChangesAsync() > 0;
         }
 
         public async Task CreateProduct(Product product)
@@ -67,18 +63,18 @@ namespace Smartshopping.Data.Repos
                 throw new ArgumentException(nameof(product));
             }
 
-            await _ctx.Products.AddAsync(product);
+            await DbSet.AddAsync(product);
         }
 
         public async Task<bool> MarkProductsToHistory()
         {
-             _ctx.Products.Where(item => item.Latest).SetValue(item => item.Latest = false);
-             return await _ctx.SaveChangesAsync() > 0;
+             DbSet.Where(item => item.Latest).SetValue(item => item.Latest = false);
+             return await Ctx.SaveChangesAsync() > 0;
         }
 
         public decimal GetAvgPriceById(string id)
         {
-            var res = _ctx.Products
+            var res = DbSet
                 .Where(item => item.ProductId == id)
                 .OrderByDescending(item => item.Date)
                 .Take(30)

@@ -9,28 +9,37 @@ namespace Smartshopping.Data.Repos
 {
     public abstract class CommonRepo<T> : ICommonRepo<T> where T : BaseEntity
     {
-        private readonly MyContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly MyContext Ctx;
+        protected readonly DbSet<T> DbSet;
         
         protected CommonRepo(MyContext context)
         {
-            _context = context;
-            _dbSet = context.Set<T>();
+            Ctx = context;
+            DbSet = context.Set<T>();
         }
         
-        public virtual Task<T> Create(T t)
+        public virtual async Task<bool> Create(T t)
         {
-            throw new System.NotImplementedException();
+            await DbSet.AddAsync(t);
+            return await Ctx.SaveChangesAsync() > 0;
         }
 
-        public virtual Task<T> Delete(int id)
+        public virtual async Task<bool> Delete(int id)
         {
-            throw new System.NotImplementedException();
+            var result = await DbSet.FindAsync(id);
+            Ctx.Remove(result);
+            return await Ctx.SaveChangesAsync() > 0;
         }
 
-        public virtual Task<T> Update(T t)
+        public virtual async Task<bool> SaveChange()
         {
-            throw new System.NotImplementedException();
+            return await Ctx.SaveChangesAsync() > 0;
+        }
+
+        public virtual async Task<bool> Update(T t)
+        {
+            Ctx.Update(t);
+            return await Ctx.SaveChangesAsync() > 0;
         }
 
         public virtual PagedResult<T> GetPagedItems(SearchParams searchParams)
@@ -41,12 +50,12 @@ namespace Smartshopping.Data.Repos
 
         public virtual async Task<T> GetItemById(int id)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await DbSet.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public virtual IQueryable<T> Search(SearchParams searchParams)
         {
-            return _dbSet
+            return DbSet
                 .Where(product => product.Latest)
                 .WhereIf(!string.IsNullOrEmpty(searchParams.Category), product => product.Category.Contains(searchParams.Category))
                 .WhereIf(!string.IsNullOrEmpty(searchParams.Query), product => product.Name.ToLower().Contains(searchParams.Query.ToLower()))
