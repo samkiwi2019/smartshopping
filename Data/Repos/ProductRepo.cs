@@ -43,12 +43,12 @@ namespace Smartshopping.Data.Repos
                 .ToListAsync();
         }
 
-        public async Task<IList<Product>> GetProductsById(string id)
+        public async Task<IList<Product>> GetProductsById(string productId)
         {
             return await DbSet
-                .Where(item => item.ProductId == id)
+                .Where(item => item.ProductId == productId)
                 .OrderByDescending(item => item.Date)
-                .Take(100).ToListAsync();
+                .Take(30).ToListAsync();
         }
 
         public async Task<bool> SaveChanges()
