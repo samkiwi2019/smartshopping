@@ -31,7 +31,7 @@ namespace Smartshopping.Cache
                 return;
             }
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
-            var cacheKey = GeneratedCacheKeyFromRequest(context.HttpContext.Request);
+            var cacheKey = await GeneratedCacheKeyFromRequest(context.HttpContext.Request);
             
            
             var cachedResponse = await cacheService.GetCachedResponseAsync(cacheKey);
