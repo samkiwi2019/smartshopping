@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,7 @@ namespace Smartshopping.Cache
             }
         }
 
-        private string GeneratedCacheKeyFromRequest(HttpRequest request)
+        private async Task<string> GeneratedCacheKeyFromRequest(HttpRequest request)
         {
             var keyBuilder = new StringBuilder();
             keyBuilder.Append($"{request.Path}");
@@ -62,7 +63,9 @@ namespace Smartshopping.Cache
             {
                 keyBuilder.Append($"|{key}-{value}");
             }
-
+            using var reader = new StreamReader(request.Body, Encoding.UTF8);
+            var str = await reader.ReadToEndAsync();
+            keyBuilder.Append($"|REQUESTED-{str}");
             return keyBuilder.ToString();
         }
     }
