@@ -2,49 +2,14 @@
 
 #### Description
 
-.net core APIs
+.net core 3.1 APIs
 
-#### Software Architecture
+#### Run this project
 
-Software architecture description
-
-#### Installation
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Instructions
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### Contribution
-
-1. Fork the repository
-2. Create Feat_xxx branch
-3. Commit your code
-4. Create Pull Request
-
-#### Gitee Feature
-
-1. You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2. Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3. Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4. The most valuable open source project [GVP](https://gitee.com/gvp)
-5. The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6. The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
-
-
-#### How to test your code performance
-```c#
-    TimeSpan ts1 = new TimeSpan(DateTime.Now.Ticks);
-    // your code
-    TimeSpan ts2 = new TimeSpan(DateTime.Now.Ticks);
-    TimeSpan ts = ts2.Subtract(ts1).Duration();
-    string spanTotalSeconds = ts.TotalSeconds.ToString();
-    Console.WriteLine(ts.ToString());
-    Console.WriteLine(spanTotalSeconds);
-    
+```shell 
+dotnet run 
+or docker-compose up -d --build
 ```
+#### Demo 
+[SmartShopping](https://shop.keenneed.com)
+[APIs](https://spider.keenneed.com/swagger/index.html)
