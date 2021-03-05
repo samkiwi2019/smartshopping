@@ -9,6 +9,6 @@ namespace Smartshopping.Data
         public int PageSize { get; set; } = 10;
         public string Category { get; set; } = "";
         public bool IsPromotion { get; set; } = false;
-        public IDictionary<string, int> SortBy { get; set; }
+        public string SortBy { get; set; } = "Compare";
     }
 }

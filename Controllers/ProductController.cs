@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Smartshopping.Cache;
 using Smartshopping.Data;
 using Smartshopping.Data.IRepos;
@@ -26,13 +29,12 @@ namespace Smartshopping.Controllers
             _mapper = mapper;
         }
         
-        [HttpPost("products")]
+        [HttpGet("products")]
         [Cached(600)]
-        public async Task<IActionResult> GetItems()
+        public IActionResult GetItems([FromQuery] SearchParams searchParams)
         {
             try
             {
-                var searchParams = await GetSearchParams();
                 var pagedResult = _repository.GetPagedItems(searchParams);
                 var items = _mapper.Map<IList<ProductReadDto>>(pagedResult.Items);
                 var pagination = pagedResult.Pagination;
@@ -44,7 +46,7 @@ namespace Smartshopping.Controllers
             }
         }
         
-        [HttpPost("products/{productId}/items")]
+        [HttpGet("products/{productId}/items")]
         [Cached(600)]
         public async Task<IActionResult> GetItemsById(string productId)
         {

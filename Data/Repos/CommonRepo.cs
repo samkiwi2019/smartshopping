@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -58,9 +59,11 @@ namespace Smartshopping.Data.Repos
             return DbSet
                 .Where(product => product.Latest)
                 .WhereIf(searchParams.IsPromotion, product => !string.IsNullOrEmpty(product.Prefix))
-                .WhereIf(!string.IsNullOrEmpty(searchParams.Category), product => product.Category.Contains(searchParams.Category))
-                .WhereIf(!string.IsNullOrEmpty(searchParams.Query), product => product.Name.ToLower().Contains(searchParams.Query.ToLower()))
-                .MultipleOrderByIf(searchParams.SortBy != null, searchParams.SortBy);
+                .WhereIf(!string.IsNullOrEmpty(searchParams.Category),
+                    product => product.Category.Contains(searchParams.Category))
+                .WhereIf(!string.IsNullOrEmpty(searchParams.Query),
+                    product => product.Name.ToLower().Contains(searchParams.Query.ToLower()))
+                .OrderByIf(searchParams.SortBy, false);
         }
     }
 }

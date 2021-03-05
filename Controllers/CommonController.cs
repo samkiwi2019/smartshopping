@@ -16,9 +16,9 @@ namespace Smartshopping.Controllers
             return await reader.ReadToEndAsync();
         }
     
-        protected async Task<SearchParams> GetSearchParams()
+        protected async Task<SearchParams> GetSearchParams(HttpRequest request)
         {
-            var rawValue = await GetRawBodyStringAsync(Request);
+            var rawValue = await GetRawBodyStringAsync(request);
             if (string.IsNullOrEmpty(rawValue)) return new SearchParams();
             var serializerSettings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore};
             return JsonConvert.DeserializeObject<SearchParams>(rawValue, serializerSettings);

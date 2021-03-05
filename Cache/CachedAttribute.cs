@@ -31,7 +31,7 @@ namespace Smartshopping.Cache
                 return;
             }
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
-            var cacheKey = await GeneratedCacheKeyFromRequest(context.HttpContext.Request);
+            var cacheKey = GeneratedCacheKeyFromRequest(context.HttpContext.Request);
             
            
             var cachedResponse = await cacheService.GetCachedResponseAsync(cacheKey);
@@ -55,7 +55,7 @@ namespace Smartshopping.Cache
             }
         }
 
-        private async Task<string> GeneratedCacheKeyFromRequest(HttpRequest request)
+        private string GeneratedCacheKeyFromRequest(HttpRequest request)
         {
             var keyBuilder = new StringBuilder();
             keyBuilder.Append($"{request.Path}");
@@ -63,9 +63,6 @@ namespace Smartshopping.Cache
             {
                 keyBuilder.Append($"|{key}-{value}");
             }
-            using var reader = new StreamReader(request.Body, Encoding.UTF8);
-            var str = await reader.ReadToEndAsync();
-            keyBuilder.Append($"|REQUESTED-{str}");
             return keyBuilder.ToString();
         }
     }

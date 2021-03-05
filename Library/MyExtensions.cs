@@ -28,7 +28,7 @@ namespace Smartshopping.Library
             return condition ? source.Where(predicate) : source;
         }
 
-        private static IQueryable<T> OrderByIf<T>(this IQueryable<T> source, string propertyName,
+        public static IQueryable<T> OrderByIf<T>(this IQueryable<T> source, string propertyName,
             bool descending, bool anotherLevel = false)
         {
             var param = Expression.Parameter(typeof(T), string.Empty); // I don't care about some naming
