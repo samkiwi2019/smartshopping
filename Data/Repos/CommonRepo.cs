@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,10 +20,14 @@ namespace Smartshopping.Data.Repos
             DbSet = context.Set<T>();
         }
         
-        public virtual async Task<bool> Create(T t)
+        public virtual async Task Create(T t)
         {
+            if (t == null)
+            {
+                throw new ArgumentException(nameof(t));
+            }
+
             await DbSet.AddAsync(t);
-            return await Ctx.SaveChangesAsync() > 0;
         }
 
         public virtual async Task<bool> Delete(int id)

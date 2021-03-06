@@ -28,9 +28,9 @@ namespace Smartshopping.Spider
                 var avg = _repository.GetAvgPriceById(product.ProductId);
                 var diff = avg == -999 ? 1 : (Convert.ToDecimal(product.Price) - avg) / avg;
                 product.Compare = Convert.ToDouble(diff);
-                await _repository.CreateProduct(product);
+                await _repository.Create(product);
             }
-            await _repository.SaveChanges();
+            await _repository.SaveChange();
         }
     }
 }

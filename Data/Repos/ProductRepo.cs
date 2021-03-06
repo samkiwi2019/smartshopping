@@ -15,18 +15,6 @@ namespace Smartshopping.Data.Repos
         {
         }
         
-        public IEnumerable<Product> GetProducts(string q, int page, int pageSize, string category, bool isPromotion)
-        {
-            var products = DbSet.Where(item => item.Latest)
-                .Where(item => 
-                    item.Name.ToLower().Contains(q.ToLower())
-                    && item.Category.ToLower().Contains(category.ToLower())
-                    && (!isPromotion || item.Prefix.Length > 0))
-                .OrderBy(item => item.Compare);
-            
-            return products;
-        }
-
         public async Task<Product> GetProductById(string id, string category)
         {
             return await DbSet
@@ -51,21 +39,6 @@ namespace Smartshopping.Data.Repos
                 .Take(30).ToListAsync();
         }
 
-        public async Task<bool> SaveChanges()
-        {
-            return await Ctx.SaveChangesAsync() > 0;
-        }
-
-        public async Task CreateProduct(Product product)
-        {
-            if (product == null)
-            {
-                throw new ArgumentException(nameof(product));
-            }
-
-            await DbSet.AddAsync(product);
-        }
-
         public async Task<bool> MarkProductsToHistory()
         {
              DbSet.Where(item => item.Latest).SetValue(item => item.Latest = false);
@@ -74,10 +47,11 @@ namespace Smartshopping.Data.Repos
 
         public decimal GetAvgPriceById(string id)
         {
+            // compare curr product over past 90 days.
             var res = DbSet
                 .Where(item => item.ProductId == id)
                 .OrderByDescending(item => item.Date)
-                .Take(30)
+                .Take(90)
                 .AsEnumerable()
                 .GroupBy(
                     item => item.Latest.ToString(),

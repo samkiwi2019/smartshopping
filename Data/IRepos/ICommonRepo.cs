@@ -5,7 +5,7 @@ namespace Smartshopping.Data.IRepos
 {
     public interface ICommonRepo<T>
     {
-        Task<bool> Create(T t);
+        Task Create(T t);
         Task<bool> Delete(int id);
         Task<bool> Update(T t);
         Task<bool> SaveChange();

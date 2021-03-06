@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Smartshopping.Cache;
 using Smartshopping.Data;
 using Smartshopping.Data.IRepos;
 using Smartshopping.Dtos;
 using Smartshopping.Library;
-using Smartshopping.Models;
 
 namespace Smartshopping.Controllers
 {
@@ -62,8 +58,8 @@ namespace Smartshopping.Controllers
             }
         }
         
-        // GET /api/products/{productId}
-        [HttpGet("{productId}")]
+        // GET /api/v1/product/{productId}
+        [HttpGet("product/{productId}")]
         [Cached(600)]
         public async Task<ActionResult<ProductReadDto>> GetProductByProductId(string productId, string category = "")
         {
@@ -78,8 +74,8 @@ namespace Smartshopping.Controllers
             }
         }
 
-        // GET /api/products/related
-        [HttpGet("related")]
+        // GET /api/v1/products/related
+        [HttpGet("products/related")]
         [Cached(600)]
         public async Task<ActionResult<IList<ProductReadDto>>> GetProductsByRelated(string name, string category = "")
         {
