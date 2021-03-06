@@ -23,7 +23,7 @@ namespace Smartshopping.Spider
             var trigger = TriggerBuilder.Create()
                 .WithIdentity("trigger1", "group1")
                 .StartNow()
-                .WithCronSchedule("0 22 0 * * ? *") // 每天的0：00运行  0 1 6 * * ? *   每天6点过1分
+                .WithCronSchedule("0 0 0 * * ? *") // 每天的0：00运行  0 1 6 * * ? *   每天6点过1分
                 .Build();
             sched.ScheduleJob(job, trigger).Wait();
         }
