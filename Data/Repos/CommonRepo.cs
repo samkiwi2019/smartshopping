@@ -26,9 +26,7 @@ namespace Smartshopping.Data.Repos
             {
                 throw new ArgumentException(nameof(t));
             }
-
             await DbSet.AddAsync(t);
-            await Ctx.SaveChangesAsync();
         }
 
         public virtual async Task<bool> Delete(int id)

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Smartshopping.Data.IRepos;
 using Smartshopping.Dtos;
+using Smartshopping.Library;
 using Smartshopping.Models;
 
 namespace Smartshopping.Spider
@@ -22,13 +23,15 @@ namespace Smartshopping.Spider
         public async Task CollectData(IList<ProductCreateDto> products)
         {
             var productModals = _mapper.Map<IList<Product>>(products);
-            foreach (var product in productModals)
+
+            await productModals.ForEachAsync(async product =>
             {
                 var avg = _repository.GetAvgPriceById(product.ProductId);
                 var diff = avg == -999 ? 1 : (Convert.ToDecimal(product.Price) - avg) / avg;
                 product.Compare = Convert.ToDouble(diff);
                 await _repository.Create(product);
-            }
+            });
+            await _repository.SaveChange();
         }
     }
 }

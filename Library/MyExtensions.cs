@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Quartz.Util;
 
 namespace Smartshopping.Library
 {
     public static class MyExtensions
     {
+        public static async Task ForEachAsync<T>(this IList<T> list, Func<T, Task> func)
+        {
+            foreach (var value in list)
+            {
+                await func(value);
+            }
+        }
         public static IQueryable<T> SetValue<T>(this IQueryable<T> items, Action<T> updateMethod)
         {
             foreach (var item in items)
