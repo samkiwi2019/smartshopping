@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Smartshopping.Data;
 using Smartshopping.Data.IRepos;
 using Smartshopping.Dtos;
 using Smartshopping.Models;
@@ -30,7 +29,6 @@ namespace Smartshopping.Spider
                 product.Compare = Convert.ToDouble(diff);
                 await _repository.Create(product);
             }
-            await _repository.SaveChange();
         }
     }
 }
