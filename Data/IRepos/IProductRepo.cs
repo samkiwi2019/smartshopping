@@ -14,6 +14,6 @@ namespace Smartshopping.Data.IRepos
         
         Task<bool> MarkProductsToHistory();
 
-        decimal GetAvgPriceById(string id);
+        Task<decimal> GetAvgPriceById(string id);
     }
 }

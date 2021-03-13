@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -45,24 +46,23 @@ namespace Smartshopping.Data.Repos
              return await Ctx.SaveChangesAsync() > 0;
         }
 
-        public decimal GetAvgPriceById(string id)
+        public async Task<decimal> GetAvgPriceById(string id)
         {
-            // compare curr product over past 90 days.
-            var res = DbSet
-                .Where(item => item.ProductId == id)
-                .OrderByDescending(item => item.Date)
-                .Take(90)
-                .AsEnumerable()
-                .GroupBy(
-                    item => item.Latest.ToString(),
-                    item => Convert.ToDecimal(item.Price), 
-                    (key, products) => new
-                    {
-                        avg = products.AsQueryable().Average()
-                    }
-                ).FirstOrDefault();
-
-            return res?.avg ?? -999;
+            try
+            {
+                var res = await DbSet
+                    .Where(item => item.ProductId == id)
+                    .OrderByDescending(item => item.Date)
+                    .Take(90)
+                    .AverageAsync(x => Convert.ToDecimal(x.Price));
+                return res;
+            }
+            catch(InvalidOperationException invalid)
+            {
+                Console.WriteLine(invalid);
+                // it is a new product.
+                return -999;
+            }
         }
     }
 }
