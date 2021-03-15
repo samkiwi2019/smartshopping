@@ -27,7 +27,7 @@ namespace Smartshopping.Spider
             await productModals.ForEachAsync(async product =>
             {
                 var avg = await _repository.GetAvgPriceById(product.ProductId);
-                var diff = avg == -999 ? 1 : (Convert.ToDecimal(product.Price) - avg) / avg;
+                var diff = avg == -999 ? 0 : (Convert.ToDecimal(product.Price) - avg) / avg;
                 product.Compare = Convert.ToDouble(diff);
                 await _repository.Create(product);
             });

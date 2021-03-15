@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +50,7 @@ namespace Smartshopping.Data.Repos
             try
             {
                 var res = await DbSet
-                    .Where(item => item.ProductId == id)
+                    .Where(item => item.ProductId.Equals(id))
                     .OrderByDescending(item => item.Date)
                     .Take(90)
                     .AverageAsync(x => Convert.ToDecimal(x.Price));
