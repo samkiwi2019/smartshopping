@@ -8,13 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json.Serialization;
 using Smartshopping.Data;
 using Smartshopping.Installers;
 using Smartshopping.Options;
-using Smartshopping.Spider;
 
 namespace Smartshopping
 {
